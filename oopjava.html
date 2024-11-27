@@ -43,19 +43,22 @@
 			  font-weight: bold;
 			  margin-bottom: 5px;
 			  display: block;
-			  color: #e74c3c;
+			  color: rgba(234, 13, 13, 0.947);
 			}
 	  
-			input {
-			  width: 100%;
-			  padding: 10px;
-			  margin-bottom: 15px;
-			  border: none;
-			  border-radius: 5px;
-			  font-size: 14px;
-			  color: #1d1919e4;
-			  background-color: #2a5298;
-			}
+			input[type="text"],
+input[type="number"] {
+  color: rgba(234, 13, 13, 0.947); 
+  background-color: #2a5298; 
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+input::placeholder {
+  color: #ccc; 
+}
 	  
 			button {
 			  background: #1e3c72;
@@ -66,6 +69,7 @@
 			  font-size: 16px;
 			  cursor: pointer;
 			  width: 100%;
+			  margin-top: 20px;
 			}
 	  
 			button:hover {
@@ -97,17 +101,20 @@ li span strong {
 
 	  
 			.delete-btn {
-			  background-color: #e74c3c;
-			  color: white;
-			  border: none;
-			  padding: 8px 4px;
-			  border-radius: 5px;
-			  cursor: pointer;
-			  font-size: 14px;
-			  width: 100px;  
-  height: 40px; 
-  text-align: center; 
-  display: inline-block; 
+				background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 10px; 
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+  height: auto; 
+  width: 100px;  
+  
 			}
 	  
 			.delete-btn:hover {
@@ -137,6 +144,7 @@ li span strong {
 	  
 			<label for="year">Gyártási év:</label>
 			<input type="number" id="year" placeholder="Pl. 1934" required />
+			
 	  
 			<button type="submit">Film hozzáadása</button>
 		  </form>
