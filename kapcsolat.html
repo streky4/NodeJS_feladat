@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Hangosfilmek Kft.</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+	</head>
+	<body class="is-preload">
+
+		<!-- Header -->
+		<header id="header">
+			<div class="logo">
+				<a href="/">Hangosfilmek Kft.</a>
+			</div>
+		</header>
+
+		<!-- Main content -->
+		<section id="main" class="wrapper style1">
+			<div class="inner">
+				<h2>Kapcsolat</h2>
+				<p>Ha bárminemű kérdése van, kérjük, küldjön üzenetet!</p>
+				
+				<!-- Kontakt űrlap -->
+				<form action="/kapcsolat" method="POST">
+					<div class="field">
+						<label for="nev">Név:</label>
+						<input type="text" id="nev" name="nev" placeholder="Írja be a nevét" required />
+					</div>
+
+					<div class="field">
+						<label for="email">E-mail:</label>
+						<input type="email" id="email" name="email" placeholder="Írja be az e-mail címét" required />
+					</div>
+
+					<div class="field">
+						<label for="uzenet">Üzenet:</label>
+						<textarea id="uzenet" name="uzenet" placeholder="Írja le üzenetét" rows="6" required></textarea>
+					</div>
+
+					<button type="submit">Üzenet küldése</button>
+				</form>
+			</div>
+		</section>
+
+		<!-- Scripts -->
+		<script src="assets/js/jquery.min.js"></script>
+		<script src="assets/js/browser.min.js"></script>
+		<script src="assets/js/breakpoints.min.js"></script>
+		<script src="assets/js/util.js"></script>
+		<script src="assets/js/main.js"></script>
+
+	</body>
+</html>

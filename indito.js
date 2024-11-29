@@ -1,13 +1,10 @@
 const express = require('express');
+const mysql = require('mysql');
 const path = require('path');
-const mysql = require('mysql'); // MySQL adatbázis modul betöltése
+const bodyParser = require('body-parser'); // body-parser importálása
 
 const app = express();
 const port = 8020;
-
-// Statikus fájlok kiszolgálása külön mappákból
-app.use('/assets', express.static(path.join(__dirname, 'assets')));
-app.use('/images', express.static(path.join(__dirname, 'images')));
 
 // Adatbázis kapcsolat beállítása
 const connection = mysql.createConnection({
@@ -26,12 +23,40 @@ connection.connect((err) => {
   console.log('Kapcsolódás az adatbázishoz sikeres.');
 });
 
-// Az index.html kiszolgálása
+// Middleware a body-parserhez
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+// Statikus fájlok kiszolgálása külön mappákból
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
+// Az index.html és kapcsolat oldalak kiszolgálása
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Adatbázisból lekérdezés a /adatbazis végponton
+app.get('/kapcsolat', (req, res) => {
+    res.sendFile(path.join(__dirname, 'kapcsolat.html'));
+});
+
+// Kapcsolat üzenet mentése az adatbázisba
+app.post('/kapcsolat', (req, res) => {
+    const { nev, email, uzenet } = req.body;
+
+    const sql = `INSERT INTO kapcsolat (nev, email, uzenet) VALUES (?, ?, ?)`;
+    connection.query(sql, [nev, email, uzenet], (err, result) => {
+        if (err) {
+            console.error('Hiba történt az üzenet mentésekor:', err);
+            res.status(500).send('Hiba történt az üzenet mentésekor.');
+            return;
+        }
+
+        res.send('Köszönjük az üzenetet! Hamarosan válaszolunk.');
+    });
+});
+
+// Adatbázis adatok lekérdezése és megjelenítése
 app.get('/adatbazis', (req, res) => {
   const sql = `
     SELECT 
@@ -43,7 +68,7 @@ app.get('/adatbazis', (req, res) => {
     INNER JOIN feladat ON film.id = feladat.filmid
     INNER JOIN szemely ON feladat.szemelyid = szemely.id;
   `;
-
+  
   connection.query(sql, (error, results) => {
     if (error) {
       console.error('Hiba történt a lekérdezés során:', error);
@@ -98,7 +123,8 @@ app.get('/adatbazis', (req, res) => {
           </thead>
           <tbody>
     `;
-
+  
+    // Adatok hozzáadása a táblázathoz
     results.forEach(row => {
       html += `
         <tr>
@@ -123,5 +149,5 @@ app.get('/adatbazis', (req, res) => {
 
 // Szerver indítása
 app.listen(port, () => {
-    console.log(`Server running at http://143.47.98.96:${port}/`);
+  console.log(`A szerver fut a http://localhost:${port} címen`);
 });
