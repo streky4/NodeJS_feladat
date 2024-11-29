@@ -1,14 +1,13 @@
 const express = require('express');
 const mysql = require('mysql');
 const app = express();
-const port = 8020;
 
 // Adatbázis kapcsolat beállítása
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'studb020',          
-  password: 'xyz456',  
-  database: 'hangosfilmek'  
+  password: 'EX8-2024',  
+  database: 'db020'  
 });
 
 // Kapcsolódás az adatbázishoz
@@ -27,10 +26,10 @@ app.get('/', (req, res) => {
       film.cim AS FilmCim,
       film.gyartas AS GyartasiEv,
       szemely.nev AS SzemelyNev,
-      feladat.feladat AS Feladat
+      feladat.megnevezes AS Feladat
     FROM film
     INNER JOIN feladat ON film.id = feladat.filmid
-    INNER JOIN szemely ON feladat.szemelyid = szemely.id
+    INNER JOIN szemely ON feladat.szemelyid = szemely.id;
   `;
 
   connection.query(sql, (error, results) => {
@@ -112,6 +111,7 @@ app.get('/', (req, res) => {
 });
 
 // Szerver indítása
-app.listen(port, () => {
-  console.log(`Szerver fut a http://localhost:${port} címen`);
+const PORT = 8020;
+app.listen(PORT, () => {
+  console.log(`A szerver fut a http://localhost:${PORT} címen`);
 });

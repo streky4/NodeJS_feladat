@@ -1,225 +1,167 @@
 <!DOCTYPE HTML>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hangosfilmek OOP JavaScript alkalmazás</title>
+    <link rel="stylesheet" href="/assets/css/main.css"> 
+    <style>
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom right, #1e3c72, #2a5298);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            margin-top: 20px;
+            font-size: 36px;
+            color: #f5f5f5;
+        }
+        form {
+            background: #2a2a2a;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+        }
+        label {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+            color: rgba(234, 13, 13, 0.947);
+        }
+        input[type="text"], input[type="number"] {
+            color: rgba(234, 13, 13, 0.947); 
+            background-color: #2a5298; 
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        button {
+            background: #1e3c72;
+            color: #2a5298;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+        button:hover {
+            background: #030169;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            width: 90%;
+            max-width: 600px;
+        }
+        li {
+            background-color: #1e3c72;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(239, 235, 235, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+        .delete-btn {
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px; 
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+        @media screen and (max-width: 768px) {
+            form, ul {
+                width: 95%;
+            }
+            button {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body class="is-preload">
+    <h1>Hangosfilmek OOP JavaScript alkalmazás</h1>
+    <form id="filmForm">
+        <label for="title">Film cím:</label>
+        <input type="text" id="title" placeholder="Pl. Meseautó" required />
+        <label for="director">Rendező:</label>
+        <input type="text" id="director" placeholder="Pl. Gaál Béla" required />
+        <label for="year">Gyártási év:</label>
+        <input type="number" id="year" placeholder="Pl. 1934" required />
+        <button type="submit">Film hozzáadása</button>
+    </form>
+    <ul id="filmList"></ul>
 
-<html>
-	<head>
-		<title>Hangosfilmek Kft.</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-	
-	
+    <script>
+        // Film osztály
+        class Film {
+            constructor(title, director, year) {
+                this.title = title;
+                this.director = director;
+                this.year = year;
+            }
+        }
 
-		<style>
-			/* Alapvető stílusok */
-			body {
-			  font-family: 'Arial', sans-serif;
-			  margin: 0;
-			  padding: 0;
-			  background: linear-gradient(to bottom right, #1e3c72, #2a5298);
-			  color: white;
-			  display: flex;
-			  flex-direction: column;
-			  align-items: center;
-			}
-	  
-			h1 {
-			  margin-top: 20px;
-			  font-size: 36px;
-			  color: #f5f5f5;
-			}
-	  
-			form {
-			  background: #2a2a2a;
-			  padding: 20px;
-			  margin: 20px 0;
-			  border-radius: 10px;
-			  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-			  width: 90%;
-			  max-width: 400px;
-			}
-	  
-			label {
-			  font-size: 16px;
-			  font-weight: bold;
-			  margin-bottom: 5px;
-			  display: block;
-			  color: rgba(234, 13, 13, 0.947);
-			}
-	  
-			input[type="text"],
-input[type="number"] {
-  color: rgba(234, 13, 13, 0.947); 
-  background-color: #2a5298; 
-  border: none;
-  padding: 10px;
-  border-radius: 5px;
-  font-size: 14px;
-}
+        // FilmManager osztály
+        class FilmManager {
+            constructor() {
+                this.films = [];
+            }
 
-input::placeholder {
-  color: #ccc; 
-}
-	  
-			button {
-			  background: #1e3c72;
-			  color: #2a5298;
-			  padding: 10px 20px;
-			  border: none;
-			  border-radius: 5px;
-			  font-size: 16px;
-			  cursor: pointer;
-			  width: 100%;
-			  margin-top: 20px;
-			}
-	  
-			button:hover {
-			  background: #030169;
-			}
-	  
-			ul {
-			  list-style-type: none;
-			  padding: 0;
-			  width: 90%;
-			  max-width: 600px;
-			}
-	  
-			li {
-  background-color: #1e3c72;
-  margin: 10px 0;
-  padding: 15px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(239, 235, 235, 0.2);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: white;
-}
+            addFilm(film) {
+                this.films.push(film);
+                this.displayFilms();
+            }
 
-li span strong {
-  color: white; 
-}
+            deleteFilm(index) {
+                this.films.splice(index, 1);
+                this.displayFilms();
+            }
 
-	  
-			.delete-btn {
-				background-color: #e74c3c;
-  color: white;
-  border: none;
-  padding: 10px; 
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center; 
-  height: auto; 
-  width: 100px;  
-  
-			}
-	  
-			.delete-btn:hover {
-			  background-color: #c0392b;
-			}
-	  
-			/* Mobilbarát dizájn */
-			@media screen and (max-width: 768px) {
-			  form, ul {
-				width: 95%;
-			  }
-			  button {
-				font-size: 14px;
-			  }
-			}
-		  </style>
-		</head>
-		<body class="is-preload">
-		  <h1>Hangosfilmek OOP JavaScript alkalmazás</h1>
-	  
-		  <form id="filmForm">
-			<label for="title">Film cím:</label>
-			<input type="text" id="title" placeholder="Pl. Meseautó" required />
-	  
-			<label for="director">Rendező:</label>
-			<input type="text" id="director" placeholder="Pl. Gaál Béla" required />
-	  
-			<label for="year">Gyártási év:</label>
-			<input type="number" id="year" placeholder="Pl. 1934" required />
-			
-	  
-			<button type="submit">Film hozzáadása</button>
-		  </form>
-	  
-		  <ul id="filmList"></ul>
-	  
-		  <script>
-			// Film osztály
-			class Film {
-			  constructor(title, director, year) {
-				this.title = title;
-				this.director = director;
-				this.year = year;
-			  }
-			}
-	  
-			// FilmManager osztály
-			class FilmManager {
-			  constructor() {
-				this.films = [];
-			  }
-	  
-			  // Film hozzáadása a listához
-			  addFilm(film) {
-				this.films.push(film);
-				this.displayFilms();
-			  }
-	  
-			  // Film eltávolítása a listából
-			  deleteFilm(index) {
-				this.films.splice(index, 1);
-				this.displayFilms();
-			  }
-	  
-			  // Filmek megjelenítése az oldalon
-			  displayFilms() {
-				const filmList = document.getElementById("filmList");
-				filmList.innerHTML = ""; // Lista kiürítése a frissítés előtt
-	  
-				this.films.forEach((film, index) => {
-				  const li = document.createElement("li");
-				  li.innerHTML = `
-					<span><strong>${film.title}</strong> - ${film.director} (${film.year})</span>
-					<button class="delete-btn" onclick="filmManager.deleteFilm(${index})">Törlés</button>
-				  `;
-				  filmList.appendChild(li);
-				});
-			  }
-			}
-	  
-			// FilmManager példány létrehozása
-			const filmManager = new FilmManager();
-	  
-			// Form kezelése
-			document.getElementById("filmForm").addEventListener("submit", (e) => {
-			  e.preventDefault();
-	  
-			  const title = document.getElementById("title").value;
-			  const director = document.getElementById("director").value;
-			  const year = document.getElementById("year").value;
-	  
-			  const newFilm = new Film(title, director, year);
-	  
-			  filmManager.addFilm(newFilm);
-	  
-			  document.getElementById("filmForm").reset();
-			});
-		  </script>
+            displayFilms() {
+                const filmList = document.getElementById("filmList");
+                filmList.innerHTML = "";
+                this.films.forEach((film, index) => {
+                    const li = document.createElement("li");
+                    li.innerHTML = `
+                        <span><strong>${film.title}</strong> - ${film.director} (${film.year})</span>
+                        <button class="delete-btn" onclick="filmManager.deleteFilm(${index})">Törlés</button>
+                    `;
+                    filmList.appendChild(li);
+                });
+            }
+        }
 
-<!-- Scripts -->
-<script src="assets/js/jquery.min.js"></script>
-<script src="assets/js/browser.min.js"></script>
-<script src="assets/js/breakpoints.min.js"></script>
-<script src="assets/js/util.js"></script>
-<script src="assets/js/main.js"></script>
+        const filmManager = new FilmManager();
 
+        document.getElementById("filmForm").addEventListener("submit", (e) => {
+            e.preventDefault();
+            const title = document.getElementById("title").value;
+            const director = document.getElementById("director").value;
+            const year = document.getElementById("year").value;
+            const newFilm = new Film(title, director, year);
+            filmManager.addFilm(newFilm);
+            document.getElementById("filmForm").reset();
+        });
+    </script>
 </body>
 </html>
