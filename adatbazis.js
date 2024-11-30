@@ -1,13 +1,13 @@
 const express = require('express');
 const mysql = require('mysql');
-const app = express();
+const router = express.Router();
 
 // Adatbázis kapcsolat beállítása
 const connection = mysql.createConnection({
   host: 'localhost',
-  user: 'studb020',          
-  password: 'EX8-2024',  
-  database: 'db020'  
+  user: 'studb020',
+  password: 'EX8-2024',
+  database: 'db020'
 });
 
 // Kapcsolódás az adatbázishoz
@@ -20,7 +20,7 @@ connection.connect((err) => {
 });
 
 // Adatok lekérdezése és megjelenítése HTML-ben
-app.get('/', (req, res) => {
+router.get('/', (req, res) => {
   const sql = `
     SELECT 
       film.cim AS FilmCim,
@@ -110,8 +110,4 @@ app.get('/', (req, res) => {
   });
 });
 
-// Szerver indítása
-const PORT = 8020;
-app.listen(PORT, () => {
-  console.log(`A szerver fut a http://localhost:${PORT} címen`);
-});
+module.exports = router;

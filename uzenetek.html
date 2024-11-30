@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html lang="hu">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>Hangosfilmek Kft. - Üzenetek</title>
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #444;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body class="is-preload">
+
+
+    <header id="header">
+        <div class="logo">
+            <a href="/">Hangosfilmek Kft.</a>
+        </div>
+    </header>
+   
+
+    <h1>Üzenetek</h1>
+
+    <!-- Üzenetek táblázata -->
+    <table>
+        <thead>
+            <tr>
+                <th>Neve</th>
+                <th>Email</th>
+                <th>Üzenet</th>
+                <th>Küldés ideje</th>
+            </tr>
+        </thead>
+        <tbody id="messagesTable"></tbody>
+    </table>
+
+    <!-- Scripts -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/util.js"></script>
+    <script src="assets/js/main.js"></script>
+
+    <script>
+        // Üzenetek betöltése a szerverről
+        fetch('/uzenetek-data') 
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById('messagesTable');
+                tableBody.innerHTML = ''; 
+
+                data.forEach(message => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${message.nev}</td>
+                        <td>${message.email}</td>
+                        <td>${message.uzenet}</td>
+                        <td>${new Date(message.kuldes_ido).toLocaleString()}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Hiba történt az üzenetek betöltésekor:', error);
+            });
+    </script>
+
+</body>
+</html>
