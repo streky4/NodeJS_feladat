@@ -1,0 +1,290 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>Hangosfilmek Kft.</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <style>
+      /* Modális ablak stílusok */
+      .modal {
+        display: none; 
+        position: fixed; 
+        z-index: 1; 
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0,0,0); 
+        background-color: rgba(0,0,0,0.4); 
+        padding-top: 60px;
+      }
+      .modal-content {
+        background-color: #fefefe;
+        margin: 5% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 600px;
+      }
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+      .close:hover,
+      .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body class="is-preload">
+
+    <header id="header">
+      <div class="logo">
+        <a href="/">Hangosfilmek Kft.</a> <br>
+        <a href="/crud">Filmek listája</a><br>
+        <a href="javascript:void(0);" onclick="openAddFilmModal()">Új film hozzáadása</a><br>
+      </div>
+    </header>
+
+    <!-- Filmek listája táblázat -->
+    <div id="filmek-lista">
+      <h2>Filmek listája</h2>
+      <table id="film-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Cím</th>
+            <th>Bemutató</th>
+            <th>Gyártás</th>
+            <th>Hossz</th>
+            <th>Youtube link</th>
+            <th>Műveletek</th>
+          </tr>
+        </thead>
+        <tbody id="film-table-body">
+          
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Modális ablak a filmek szerkesztéséhez -->
+    <div id="film-modal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="close-edit-modal">&times;</span>
+        <h2 id="form-title">Film szerkesztése</h2>
+        <form id="film-form-element">
+          <label for="cim">Cím</label>
+          <input type="text" id="cim" name="cim" required /><br>
+
+          <label for="bemutato">Bemutató dátum</label>
+          <input type="date" id="bemutato" name="bemutato" required /><br>
+
+          <label for="gyartas">Gyártási év</label>
+          <input type="number" id="gyartas" name="gyartas" required /><br>
+
+          <label for="hossz">Hossz (perc)</label>
+          <input type="number" id="hossz" name="hossz" required /><br>
+
+          <label for="youtube">Youtube link</label>
+          <input type="text" id="youtube" name="youtube" /><br>
+
+          <button type="submit">Mentés</button>
+          <button type="button" id="cancel-button">Mégse</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modális ablak az új film hozzáadásához -->
+    <div id="add-film-modal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="close-add-modal">&times;</span>
+        <h2>Új film hozzáadása</h2>
+        <form id="add-film-form">
+          <label for="new-cim">Cím</label>
+          <input type="text" id="new-cim" name="cim" required /><br>
+
+          <label for="new-bemutato">Bemutató dátum</label>
+          <input type="date" id="new-bemutato" name="bemutato" required /><br>
+
+          <label for="new-gyartas">Gyártási év</label>
+          <input type="number" id="new-gyartas" name="gyartas" required /><br>
+
+          <label for="new-hossz">Hossz (perc)</label>
+          <input type="number" id="new-hossz" name="hossz" required /><br>
+
+          <label for="new-youtube">Youtube link</label>
+          <input type="text" id="new-youtube" name="youtube" /><br>
+
+          <button type="submit">Hozzáadás</button>
+          <button type="button" id="cancel-add-button">Mégse</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/util.js"></script>
+    <script src="assets/js/main.js"></script>
+
+    <script>
+      // Filmek listájának betöltése a szerverről
+      async function loadFilmek() {
+        try {
+          const response = await fetch('/api/film');
+          const filmek = await response.json();
+          const tbody = document.getElementById('film-table-body');
+          tbody.innerHTML = ''; 
+
+          filmek.forEach(film => {
+            const row = `
+              <tr>
+                <td>${film.id}</td>
+                <td>${film.cim}</td>
+                <td>${film.bemutato}</td>
+                <td>${film.gyartas}</td>
+                <td>${film.hossz}</td>
+                <td>${film.youtube}</td>
+                <td>
+                  <button onclick="editFilm(${film.id})">Szerkesztés</button>
+                  <button onclick="deleteFilm(${film.id})">Törlés</button>
+                </td>
+              </tr>
+            `;
+            tbody.innerHTML += row;
+          });
+        } catch (error) {
+          console.error('Hiba történt az adatok betöltésekor:', error);
+        }
+      }
+
+      // Új film hozzáadásának modális ablakja
+      function openAddFilmModal() {
+        document.getElementById('add-film-modal').style.display = 'block'; // Modális ablak megjelenítése
+      }
+
+      // Új film hozzáadása
+      document.getElementById('add-film-form').onsubmit = async function(event) {
+        event.preventDefault();
+        
+        const newFilm = {
+          cim: document.getElementById('new-cim').value,
+          bemutato: document.getElementById('new-bemutato').value,
+          gyartas: document.getElementById('new-gyartas').value,
+          hossz: document.getElementById('new-hossz').value,
+          youtube: document.getElementById('new-youtube').value
+        };
+
+        const response = await fetch('/api/film', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(newFilm)
+        });
+        
+        if (response.ok) {
+          alert('Film hozzáadva!');
+          loadFilmek(); 
+          document.getElementById('add-film-modal').style.display = 'none'; // Modális ablak bezárása
+        } else {
+          alert('Hiba történt a film hozzáadása közben.');
+        }
+      };
+
+      // Film szerkesztés funkció
+      function editFilm(id) {
+        document.getElementById('film-modal').style.display = 'block'; // Modális ablak megjelenítése
+        document.getElementById('form-title').textContent = 'Film szerkesztése';
+        
+        // Adatok betöltése az adott filmhez
+        fetch(`/api/film/${id}`)
+          .then(response => response.json())
+          .then(film => {
+            document.getElementById('cim').value = film.cim;
+            document.getElementById('bemutato').value = film.bemutato;
+            document.getElementById('gyartas').value = film.gyartas;
+            document.getElementById('hossz').value = film.hossz;
+            document.getElementById('youtube').value = film.youtube;
+          });
+        
+        // Form elküldésének kezelése
+        const form = document.getElementById('film-form-element');
+        form.onsubmit = function(event) {
+          event.preventDefault();
+          const updatedFilm = {
+            cim: document.getElementById('cim').value,
+            bemutato: document.getElementById('bemutato').value,
+            gyartas: document.getElementById('gyartas').value,
+            hossz: document.getElementById('hossz').value,
+            youtube: document.getElementById('youtube').value
+          };
+          updateFilm(id, updatedFilm);
+        };
+      }
+
+      // Film módosítása
+      async function updateFilm(id, updatedFilm) {
+        const response = await fetch(`/api/film/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(updatedFilm)
+        });
+        if (response.ok) {
+          alert('Film sikeresen frissítve!');
+          loadFilmek(); 
+          document.getElementById('film-modal').style.display = 'none'; // Modális ablak bezárása
+        } else {
+          alert('Hiba történt a film frissítésekor.');
+        }
+      }
+
+      // Film törlésének kezelése
+      async function deleteFilm(id) {
+        if (confirm('Biztosan törölni szeretnéd a filmet?')) {
+          const response = await fetch(`/api/film/${id}`, {
+            method: 'DELETE'
+          });
+          if (response.ok) {
+            alert('Film törölve!');
+            loadFilmek(); 
+          } else {
+            alert('Hiba történt a film törlésekor.');
+          }
+        }
+      }
+
+      // Form bezárása
+      document.getElementById('cancel-button').onclick = function() {
+        document.getElementById('film-modal').style.display = 'none';
+      };
+
+      // Form bezárása az új film esetén
+      document.getElementById('cancel-add-button').onclick = function() {
+        document.getElementById('add-film-modal').style.display = 'none';
+      };
+
+      // Modális ablak bezárása
+      document.getElementById('close-edit-modal').onclick = function() {
+        document.getElementById('film-modal').style.display = 'none';
+      };
+
+      document.getElementById('close-add-modal').onclick = function() {
+        document.getElementById('add-film-modal').style.display = 'none';
+      };
+
+      // Kezdődő betöltés
+      loadFilmek();
+    </script>
+
+  </body>
+</html>
